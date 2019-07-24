@@ -49,6 +49,14 @@ public class CanvasManager : MonoBehaviour
     public void SwitchScreenMode()
     {
         if (ScreenMode == RenderMode.ScreenSpaceOverlay) ScreenMode = RenderMode.WorldSpace;
+        else ScreenMode = RenderMode.ScreenSpaceOverlay;
+
+        if (ScreenMode == RenderMode.WorldSpace)
+        {
+            canvas.worldCamera = Camera.main;
+            canvas.transform.position = Vector3.zero;
+            canvas.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+        }
     }
 
 }
