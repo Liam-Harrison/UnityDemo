@@ -15,7 +15,20 @@ public class CanvasManager : MonoBehaviour
             return instance ?? FindObjectOfType<CanvasManager>();
         }
     }
+
+    public static RenderMode ScreenMode
+    {
+        get
+        {
+            return Instance.canvas.renderMode;
+        }
+        set
+        {
+            Instance.canvas.renderMode = value;
+        }
+    }
     #endregion
+
 
     private void Awake()
     {
@@ -33,15 +46,9 @@ public class CanvasManager : MonoBehaviour
         
     }
 
-    public static RenderMode ScreenMode
+    public void SwitchScreenMode()
     {
-        get
-        {
-            return Instance.canvas.renderMode;
-        }
-        set
-        {
-            Instance.canvas.renderMode = value;
-        }
+        if (ScreenMode == RenderMode.ScreenSpaceOverlay) ScreenMode = RenderMode.WorldSpace;
     }
+
 }
