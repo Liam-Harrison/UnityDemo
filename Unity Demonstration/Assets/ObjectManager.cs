@@ -5,6 +5,22 @@ using UnityEngine.UI;
 
 public class ObjectManager : MonoBehaviour
 {
+    #region Singleton
+    private static ObjectManager instance;
+    public static ObjectManager Instance
+    {
+        get
+        {
+            return instance ?? FindObjectOfType<ObjectManager>();
+        }
+    }
+    #endregion
+
+    private void Awake()
+    {
+        instance = instance ?? this;
+    }
+
     void Start()
     {
         originalRotation = gameObject.transform.rotation;
@@ -26,64 +42,65 @@ public class ObjectManager : MonoBehaviour
 
     [Header("Display Settings")]
     [SerializeField]
-    private float maxScale = 5f;
+    internal float maxScale = 5f;
     [SerializeField]
-    private float rotationTime = 30f;
+    internal float rotationTime = 30f;
     [SerializeField]
-    private float sineRange = 90f;
+    internal float sineRange = 90f;
     [SerializeField]
-    private bool useSinWave = true;
+    internal bool useSinWave = true;
     [SerializeField]
-    private bool rotateAroundX = false;
+    internal bool rotateAroundX = false;
     [SerializeField]
-    private bool rotateAroundY = true;
+    internal bool rotateAroundY = true;
     [SerializeField]
-    private bool rotateAroundZ = false;
+    internal bool rotateAroundZ = false;
+    [SerializeField]
+    internal bool rotate = true;
 
     private Quaternion originalRotation;
     void Update()
     {
-        if (rotationTime > float.Epsilon)
+        if (rotate)
         {
+            if (rotationTime <= Mathf.Epsilon) rotationTime = 30f;
+
             float x = originalRotation.eulerAngles.x, 
                   y = originalRotation.eulerAngles.y, 
                   z = originalRotation.eulerAngles.z;
 
             if (rotateAroundX && useSinWave) x = Mathf.Sin(Time.timeSinceLevelLoad) * sineRange;
-            else if (rotateAroundX) x = (Time.timeSinceLevelLoad * 1000) / rotationTime;
+            else if (rotateAroundX) x = (Time.timeSinceLevelLoad * 1000) / (360 / rotationTime);
 
             if (rotateAroundY && useSinWave) y = Mathf.Sin(Time.timeSinceLevelLoad) * sineRange;
-            else if (rotateAroundY) y = (Time.timeSinceLevelLoad * 1000) / rotationTime;
+            else if (rotateAroundY) y = (Time.timeSinceLevelLoad * 1000) / (360 / rotationTime);
 
             if (rotateAroundZ && useSinWave) z = Mathf.Sin(Time.timeSinceLevelLoad) * sineRange;
-            else if (rotateAroundZ) z = (Time.timeSinceLevelLoad * 1000) / rotationTime;
+            else if (rotateAroundZ) z = (Time.timeSinceLevelLoad * 1000) / (360 / rotationTime);
 
             gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.Euler(x, y, z), Time.deltaTime);
         }
     }
 
-    private Vector3 originalScale = Vector3.zero;
-    private Vector3 lastScale = Vector3.zero;
     private Vector3 normal;
+    private bool lockedScale = false;
+
     public void UpdateScaling()
     {
         var scale = new Vector3(xAxis.value * maxScale + 1, yAxis.value * maxScale + 1, zAxis.value * maxScale + 1);
-        if (scale == lastScale) return;
 
-        if (lockToggle.isOn && originalScale == Vector3.zero)
+        if (lockToggle.isOn && !lockedScale)
         {
-            originalScale = scale;
+            lockedScale = true;
             normal = scale.normalized;
         }
-        else if (!lockToggle.isOn) originalScale = Vector3.zero;
+        else if (!lockToggle.isOn) lockedScale = false;
 
         if (lockToggle.isOn)
         {
-            var newScale = normal * scale.magnitude;
-            scale = new Vector3(newScale.x, newScale.y, newScale.z);
+            scale = normal * scale.magnitude;
         }
 
         gameObject.transform.localScale = scale;
-        lastScale = scale;
     }
 }

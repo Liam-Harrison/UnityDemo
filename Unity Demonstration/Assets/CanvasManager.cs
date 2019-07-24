@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 public class CanvasManager : MonoBehaviour
@@ -55,7 +56,7 @@ public class CanvasManager : MonoBehaviour
         {
             canvas.worldCamera = Camera.main;
             canvas.transform.position = Vector3.zero;
-            canvas.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+            canvas.transform.localScale = new Vector3(0.005f, 0.005f, 1f); // Scale things to fit better.
         }
     }
 

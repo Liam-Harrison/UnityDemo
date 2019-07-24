@@ -31,7 +31,7 @@ public class FreeflyController : MonoBehaviour
         var vertical = Input.GetAxis("Vertical");
         var mouseX = Input.GetAxis("Mouse X");
         var mouseY = Input.GetAxis("Mouse Y");
-        var scroll = -Input.GetAxis("Mouse ScrollWheel");
+        var scroll = -Input.GetAxis("Mouse ScrollWheel") * 2;
 
         if (Input.GetMouseButton(2))
         {
